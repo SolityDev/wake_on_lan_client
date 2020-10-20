@@ -15,7 +15,7 @@ class WoLController {
 
 	@GetMapping("devices")
 	fun getDevices(): ResponseEntity<List<DeviceResponse>> {
-		return ResponseEntity.ok(listOf(DeviceResponse(1, "device1", "E8:...", "192.168.1.1", 0)))
+		return ResponseEntity.ok(listOf(DeviceResponse(1, "device1", "E8:...", "192.168.1.1", 0), DeviceResponse(2, "device2", "AA:...", "192.168.1.2", 0)))
 	}
 
 	@GetMapping("devices/{id}")
@@ -23,7 +23,6 @@ class WoLController {
 		return ResponseEntity.ok(DeviceResponse(1, "device1", "E8:...", "192.168.1.1", 0))
 	}
 }
-
 data class DeviceResponse(
 		val id: Long,
 		val name: String,
