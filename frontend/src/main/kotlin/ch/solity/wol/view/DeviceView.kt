@@ -39,4 +39,4 @@ class DeviceView : VerticalLayout() {
     }
 }
 
-data class Device(val ip: String, val computername: String, val ipaddress: String, val macaddress: String, val user: Int)
+data class Device(val id: Int, val computername: String, val ipaddress: String, val macaddress: String, val user: Int)

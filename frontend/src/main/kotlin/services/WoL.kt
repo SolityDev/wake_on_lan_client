@@ -1,60 +1,57 @@
 package services
 
+import java.net.DatagramPacket
+import java.net.DatagramSocket
+import java.net.InetAddress
+
+
 class WoL {
 
+	private val port = 9
+
 	fun sendWoL(ipStr: String, macStr: String) {
-			val macBytes = getMacBytes(macStr)
-//			val bytes = Byte()
+		val macBytes = getMacBytes(macStr)
+		val bytes = ByteArray(6 + 16 * macBytes.size)
+
+		for (i in 0..5) {
+			bytes[i] = 0xff.toByte()
+		}
+
+		var i = 6
+		while (i < bytes.size) {
+			System.arraycopy(macBytes, 0, bytes, i, macBytes.size);
+			i += macBytes.size
+		}
+
+		val address = InetAddress.getByName(ipStr)
+		val packet = DatagramPacket(bytes, bytes.size, address, port)
+		val socket = DatagramSocket()
+
+		socket.use {
+			socket.send(packet)
+			socket.close()
+			print("send magic packet to $ipStr")
+		}
 	}
 
+	@Throws(IllegalArgumentException::class)
 	private fun getMacBytes(macString: String): ByteArray {
+		val result = ByteArray(6)
 
-	TODO()
+		val hex: List<String> = macString.split(":")
+
+		if (hex.size != 6) {
+			throw IllegalArgumentException("invalid MAC Address!")
+		}
+
+		try {
+			for (i in 0 until 6) {
+				result[i] = Integer.parseInt(hex[i], 16).toByte()
+			}
+		} catch (e: NumberFormatException) {
+			throw IllegalArgumentException("invalid hex digit in MAC address.")
+		}
+
+		return result
 	}
 }
-
-
-/**
-
-try {
-byte[] macBytes = getMacBytes(macStr);
-byte[] bytes = new byte[6 + 16 * macBytes.length];
-for (int i = 0; i < 6; i++) {
-bytes[i] = (byte) 0xff;
-}
-for (int i = 6; i < bytes.length; i += macBytes.length) {
-System.arraycopy(macBytes, 0, bytes, i, macBytes.length);
-}
-
-InetAddress address = InetAddress.getByName(ipStr);
-DatagramPacket packet = new DatagramPacket(bytes, bytes.length, address, PORT);
-DatagramSocket socket = new DatagramSocket();
-socket.send(packet);
-socket.close();
-
-System.out.println("Wake-on-LAN packet sent.");
-}
-catch (Exception e) {
-System.out.println("Failed to send Wake-on-LAN packet: + e");
-System.exit(1);
-}
-
-}
-
-private static byte[] getMacBytes(String macStr) throws IllegalArgumentException {
-byte[] bytes = new byte[6];
-String[] hex = macStr.split("(\\:|\\-)");
-if (hex.length != 6) {
-throw new IllegalArgumentException("Invalid MAC address.");
-}
-try {
-for (int i = 0; i < 6; i++) {
-bytes[i] = (byte) Integer.parseInt(hex[i], 16);
-}
-}
-catch (NumberFormatException e) {
-throw new IllegalArgumentException("Invalid hex digit in MAC address.");
-}
-return bytes;
-}
-		**/

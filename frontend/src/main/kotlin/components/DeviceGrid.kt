@@ -7,7 +7,7 @@ import com.github.mvysny.karibudsl.v10.onLeftClick
 import com.vaadin.flow.component.HasComponents
 import com.vaadin.flow.component.button.Button
 import com.vaadin.flow.component.grid.Grid
-import com.vaadin.flow.component.notification.Notification
+import services.WoL
 
 
 class DeviceGrid : Grid<Device>() {
@@ -19,7 +19,7 @@ class DeviceGrid : Grid<Device>() {
 			addColumn(Device::ipaddress).setHeader("IP")
 			addColumn(Device::macaddress).setHeader("Mac")
 			setItems(
-					listOf(Device("1", "asdfasdf", "o", "sda", 5), Device("1", "hfdhdfg", "o", "sda", 5), Device("1", "w353245", "o", "sda", 5), Device("1", "i67ighfjsd", "o", "sda", 5))
+					listOf(Device(1, "asdfasdf", "127.0.0.1", "f8:ff:c2:10:27:aa", 5), Device(2, "hfdhdfg", "o", "sda", 5), Device(3, "w353245", "o", "sda", 5), Device(4, "i67ighfjsd", "o", "sda", 5))
 			)
 			addComponentColumn { device ->
 				createWolButton(device, "wake up!")
@@ -31,7 +31,8 @@ class DeviceGrid : Grid<Device>() {
 		val button = Button(buttonText)
 
 		button.onLeftClick {
-			Notification.show(device.computername)
+			val wol = WoL()
+			wol.sendWoL(device.ipaddress, device.macaddress)
 		}
 
 		return button
