@@ -19,6 +19,9 @@ import com.github.mvysny.karibudsl.v10.*
 import com.vaadin.flow.component.Key
 import com.vaadin.flow.component.button.Button
 import com.vaadin.flow.component.dependency.CssImport
+import com.vaadin.flow.component.grid.Grid
+import com.vaadin.flow.component.grid.GridVariant
+import com.vaadin.flow.component.listbox.ListBox
 import com.vaadin.flow.component.notification.Notification
 import com.vaadin.flow.component.textfield.TextField
 import com.vaadin.flow.router.Route
@@ -34,31 +37,16 @@ import com.vaadin.flow.server.PWA
     CssImport(value = "./styles/vaadin-text-field-styles.css", themeFor = "vaadin-text-field")
 ])
 class MainView : KComposite() {
-    private lateinit var nameField: TextField
-    private lateinit var greetButton: Button
 
     // The main view UI definition
     private val root = ui {
-        // Use custom CSS classes to apply styling. This is defined in shared-styles.css.
-        verticalLayout(classNames = "centered-content") {
-
-            // Use TextField for standard text input
-            nameField = textField("Your name")
-
-            // Use Button for a clickable button
-            greetButton = button("Say hello") {
-                setPrimary(); addClickShortcut(Key.ENTER)
-            }
+        horizontalLayout {
+            addClassName("card")
         }
     }
 
     init {
-        // attach functionality to the UI components.
-        // It's a good practice to keep UI functionality separated from UI definition.
-
-        // Button click listeners can be defined as lambda expressions
-        greetButton.onLeftClick {
-            Notification.show("Hello, ${nameField.value}")
-        }
     }
 }
+
+data class Person(val name: String, val age: Int)
